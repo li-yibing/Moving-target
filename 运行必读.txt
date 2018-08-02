@@ -1,0 +1,72 @@
+avi2img.m    功能：将视频转换为单张图片
+avi2mat.m    功能：将所有单帧图片转换为向量存储为mat文件
+img2avi.m    功能：将所有单帧图片转换为视频
+run_vedio.m  功能：将视频在Matlab中播放
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Ans1_fr_differ.m	     功能：使用帧间差的方法建立背景模型，将不包括动态背景、摄像头稳定的监控视频中提取蒙版mask和前景fr
+文件说明：   file_name = 'D:\数学建模竞赛D题附件\附件2-典型视频\不带晃动-静态背景\hall\input.avi';  
+蒙版保存在程序目录mask.avi中、前景目标保存在foreground.avi中
+
+Ans2_ViBe.m              功能：使用ViBe方法构建背景模型，将带有背景微动、摄像头稳定的监控视频中提取蒙版mask和前景fr
+文件说明：   file_name = 'D:\数学建模竞赛D题附件\附件2-典型视频\不带晃动-动态背景\waterSurface\input.avi';  
+蒙版保存在程序目录mask.avi中、前景目标保存在foreground.avi中
+
+Ans3_surf_ViBe.m         功能：使用surf特征进行两帧之间的特征点匹配，在进行线性仿射逆变换使视频背景固定再使用ViBe方法构建背景模型，将带有背景微动、摄像头稳定的监控视频中提取蒙版mask和前景fr
+文件说明：   file_name = 'D:\数学建模竞赛D题附件\附件2-典型视频\有晃动\people2\input.avi';  
+蒙版保存在程序目录mask.avi中、前景目标保存在foreground.avi中
+
+Ans3_surf_fr_differ.m         功能：使用surf特征进行两帧之间的特征点匹配，在进行线性仿射逆变换使视频背景固定再使用相邻帧方法构建背景模型，将带有背景微动、摄像头稳定的监控视频中提取蒙版mask和前景fr
+文件说明：   file_name = 'D:\数学建模竞赛D题附件\附件2-典型视频\有晃动\people2\input.avi';  
+蒙版保存在程序目录mask.avi中、前景目标保存在foreground.avi中
+
+Ans4.m                  功能：使用ViBe模型建立背景模型，用过获取的背景模型与不存在前景目标的实际背景模型进行结构相似度判断，获取了带有前景目标的关键帧
+文件说明：   视频文件路径videoObj = VideoReader('D:\数学建模竞赛D题附件\附件3-检测前景视频\overpass\overpass.avi');
+程序运行结束后用命令行查看变量 num为关键帧数量、变量result为关键帧的编号。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+为了整理图像结果与模型对比，我们另外做了另外几种模型，并将图像保存到指定位置，要操作的文件夹稍微多一点，这些代码存在\code
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\code文件夹下程序运行说明
+GMM.m：（Ans1_GMM）
+文件作用：利用高斯混合模型(Gaussian Mixture Model)建立背景模型，与帧间差分相结合，实现前景目标检测。
+文件说明：文件开头有
+file_name = 'H:\海洋大学\研究生\建模大赛\数学建模竞赛D题附件\附件2-典型视频\不带晃动-静态背景\pedestrian\input.avi';  
+wenjianming='pedestrian_gaosi';
+表示视频文件读取位置，要保证两者的'pedestrian'字段需要修改时要同时修改。
+文件结束有
+imwrite(fr_bw,strcat('C:\Users\Administrator\Desktop\文档\保存图片\',wenjianming,'_input.jpg'));
+imwrite(uint8(diff_map),strcat('C:\Users\Administrator\Desktop\文档\保存图片\',wenjianming,'_mask.jpg'));
+L = mat2gray(L);
+imwrite(L,strcat('C:\Users\Administrator\Desktop\文档\保存图片\',wenjianming,'_foreground.jpg'));
+用来表示需要图片的保存位置。
+
+mean_mode.m与mean_mode2.m：(Ans1_Mean)
+文件作用：利用平滑模型建立背景模型，实现前景目标检测。
+mean_mode.m与mean_mode2.m文件是一组，只需要放在同一个路径名下，运行时只需要运行mean_mode.m文件即可。
+文件说明：文件开头有
+file_name = 'H:\海洋大学\研究生\建模大赛\数学建模竞赛D题附件\附件2-典型视频\不带晃动-静态背景\office\input.avi';  
+file_name2 = 'H:\海洋大学\研究生\建模大赛\数学建模竞赛D题附件\附件2-典型视频\不带晃动-静态背景\office\image\';
+wenjianming = 'office_mean';
+使用时需要注意视频读取路径以及保证'office'字段需要修改时要同时修改。
+
+office_bj_mean.mat、office_bj_zhongshu.mat、surf.mat：
+运行其他文件是自动生成的中间文件，不需要进行操作。
+
+SSIM.m：
+进行图像相似性比较，其它函数使用时可能需要调用，与其他文件保持在同一路径下。
+
+max_pro.m与max_pro2.m:(Ans1_PMax)
+文件作用：利用最大概率模型(Maximum probability model)建立背景模型，实现前景目标检测。
+max_pro.m与max_pro2.m文件是一组，只需要放在同一个路径名下，运行时只需要运行max_pro.m文件即可。
+文件说明：文件开头有
+file_name = 'H:\海洋大学\研究生\建模大赛\数学建模竞赛D题附件\附件2-典型视频\不带晃动-静态背景\office\input.avi';  
+file_name2 = 'H:\海洋大学\研究生\建模大赛\数学建模竞赛D题附件\附件2-典型视频\不带晃动-静态背景\office\image\';
+wenjianming = 'office_mode';
+使用时需要注意视频读取路径以及保证'office'字段需要修改时要同时修改。
+
+surf.m:(Ans3_1)
+文件作用：通过MATLAB surf函数进行特征点的匹配，及时正确计算因相机晃动造成的视频抖动，再通过反线性仿射变换，将每一帧图像及时修正到应该在的位置，再配合高斯混合模型或者平滑模型或者最大概率模型将前景目标进行分离，最终得到论文所示的效果。
